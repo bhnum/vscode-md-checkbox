@@ -1,26 +1,55 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+import { randomUUID, timingSafeEqual } from 'crypto';
+import express, { Request, Response } from 'express';
+import { AddressInfo } from 'net';
 import * as vscode from 'vscode';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+const emptyImage =
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQAAAAA3bvkkAAAACklEQVR4AWNgAAAAAgABc3UBGAAAAABJRU5ErkJggg==';
+
+const serverInstanceId = randomUUID().toString();
+
+const validateInstance = (req: Request) => {
+    const instanceId = req.query.instance as string;
+    return timingSafeEqual(
+        Buffer.from(instanceId),
+        Buffer.from(serverInstanceId)
+    );
+};
+
+const handle = (action: 'mark' | 'unmark') => (req: Request, res: Response) => {
+    if (!validateInstance(req)) {
+        res.status(403);
+        return;
+    }
+
+    const source = req.query.source as string;
+    const index = parseInt(req.query.index as string);
+
+    console.log('got index', index, 'at source', source, 'with action', action);
+    res.contentType('image/png');
+    res.send(Buffer.from(emptyImage, 'base64'));
+};
+
 export function activate(context: vscode.ExtensionContext) {
+    console.log('Extension "vscode-md-checkbox" is now active.');
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "md-checkbox" is now active!');
+    const app = express();
+    app.disable('view cache');
+    app.get('/checkbox/mark', handle('mark'));
+    app.get('/checkbox/unmark', handle('unmark'));
+    const server = app.listen();
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('md-checkbox.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Markdown Checkbox!');
-	});
+    const port = (server.address() as AddressInfo).port;
 
-	context.subscriptions.push(disposable);
+    context.subscriptions.push({ dispose: () => server.closeAllConnections() });
+
+    return {
+        extendMarkdownIt(md: any) {
+            return md.use(require('markdown-it-checkbox'), {
+                idPrefix: `port:${port},instance:${serverInstanceId},index:`,
+            });
+        },
+    };
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}
