@@ -14,7 +14,7 @@
                 "${workspaceFolder}/task-list.md",
                 "--extensionDevelopmentPath=${workspaceFolder}"
             ],
-            "outFiles": ["${workspaceFolder}/out/**/*.js"],
+            "outFiles": ["${workspaceFolder}/dist/**/*.js"],
             "preLaunchTask": "${defaultBuildTask}"
         }
     ]

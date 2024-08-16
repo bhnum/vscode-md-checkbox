@@ -17,22 +17,19 @@
     "publisher": "behnam",
     "pricing": "Free",
     "activationEvents": [],
-    "main": "./out/extension.js",
+    "main": "./dist/extension.js",
     "contributes": {
         "markdown.markdownItPlugins": true,
         "markdown.previewScripts": [
-            "./out/preview.js"
+            "./dist/preview.js"
         ]
     },
     "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "npm run compile:preview && npm run compile:extension",
-        "compile:preview": "copy-and-watch src/preview.js out/",
-        "compile:extension": "tsc -p ./",
-        "watch": "concurrently --raw \"npm run watch:preview\" \"npm run watch:extension\"",
-        "watch:extension": "tsc -watch -p ./",
-        "watch:preview": "copy-and-watch --watch src/preview.js out/",
-        "pretest": "npm run compile && npm run lint",
+        "vscode:prepublish": "npm run build",
+        "package": "node esbuild.mjs --production",
+        "build": "node esbuild.mjs",
+        "watch": "node esbuild.mjs --watch",
+        "pretest": "npm run build && npm run lint",
         "lint": "eslint src --ext ts",
         "test": "vscode-test"
     },
@@ -48,6 +45,9 @@
         "@vscode/test-electron": "^2.4.1",
         "concurrently": "^8.2.2",
         "copy-and-watch": "^0.1.8",
+        "esbuild": "^0.23.0",
+        "esbuild-plugin-copy-watch": "^2.3.1",
+        "esbuild-plugin-tsc": "^0.4.0",
         "eslint": "^8.57.0",
         "typescript": "^5.5.4"
     },

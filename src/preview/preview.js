@@ -1,4 +1,4 @@
-document.addEventListener(`click`, (e) => {
+document.addEventListener('click', (e) => {
     const checkboxData = getCheckboxData(e.target);
     if (!checkboxData) {
         return;
@@ -8,7 +8,7 @@ document.addEventListener(`click`, (e) => {
     const { port, nonce } = getServerData();
     const source = getSource();
 
-    const url = new URL(`http://localhost/checkbox/mark`);
+    const url = new URL('http://localhost/checkbox/mark');
     url.port = port;
     url.searchParams.append('nonce', nonce);
     url.searchParams.append('source', source);
@@ -25,7 +25,7 @@ function getCheckboxData(node) {
         return;
     }
 
-    const dataLineNode = checkbox.closest(`[data-line]`);
+    const dataLineNode = checkbox.closest('[data-line]');
     if (!dataLineNode) {
         return;
     }
