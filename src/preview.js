@@ -1,14 +1,19 @@
 document.addEventListener(`click`, (e) => {
-    const { line, checked } = getCheckboxData(e.target);
+    const checkboxData = getCheckboxData(e.target);
+    if (!checkboxData) {
+        return;
+    }
+
+    const { line, checked } = checkboxData;
     const { port, nonce } = getServerData();
     const source = getSource();
-    const action = checked ? 'mark' : 'unmark';
 
-    const url = new URL(`http://localhost/checkbox/${action}`);
+    const url = new URL(`http://localhost/checkbox/mark`);
     url.port = port;
     url.searchParams.append('nonce', nonce);
     url.searchParams.append('source', source);
     url.searchParams.append('line', line);
+    url.searchParams.append('checked', checked);
     url.searchParams.append('no-cache', crypto.randomUUID());
 
     sendRequest(url);
@@ -16,8 +21,20 @@ document.addEventListener(`click`, (e) => {
 
 function getCheckboxData(node) {
     const checkbox = node.closest(`input[type="checkbox"]`);
-    const dataLineNone = checkbox.closest(`[data-line]`);
-    const line = dataLineNone.getAttribute('data-line');
+    if (!checkbox) {
+        return;
+    }
+
+    const dataLineNode = checkbox.closest(`[data-line]`);
+    if (!dataLineNode) {
+        return;
+    }
+
+    const line = dataLineNode.getAttribute('data-line');
+    if (line === null) {
+        return;
+    }
+
     const checked = checkbox.checked;
     return { line, checked };
 }

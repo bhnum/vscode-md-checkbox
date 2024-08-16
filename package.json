@@ -12,21 +12,19 @@
     "activationEvents": [],
     "main": "./out/extension.js",
     "contributes": {
-        "commands": [
-            {
-                "command": "md-checkbox.helloWorld",
-                "title": "Hello World"
-            }
-        ],
         "markdown.markdownItPlugins": true,
         "markdown.previewScripts": [
-            "./preview.mjs"
+            "./out/preview.js"
         ]
     },
     "scripts": {
         "vscode:prepublish": "pnpm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
+        "compile": "pnpm run compile:preview && pnpm run compile:extension",
+        "compile:preview": "copy-and-watch src/preview.js out/",
+        "compile:extension": "tsc -p ./",
+        "watch": "concurrently --raw \"pnpm run watch:preview\" \"pnpm run watch:extension\"",
+        "watch:extension": "tsc -watch -p ./",
+        "watch:preview": "copy-and-watch --watch src/preview.js out/",
         "pretest": "pnpm run compile && pnpm run lint",
         "lint": "eslint src --ext ts",
         "test": "vscode-test"
@@ -41,6 +39,8 @@
         "@typescript-eslint/parser": "^7.18.0",
         "@vscode/test-cli": "^0.0.9",
         "@vscode/test-electron": "^2.4.1",
+        "concurrently": "^8.2.2",
+        "copy-and-watch": "^0.1.8",
         "eslint": "^8.57.0",
         "typescript": "^5.5.4"
     },
