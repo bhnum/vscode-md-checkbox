@@ -1,26 +1,33 @@
 document.addEventListener(`click`, (e) => {
-    const checkbox = e.target.closest(`input[type="checkbox"]`);
-    const { port, instance, index } = getValues(checkbox.id);
+    const { line, checked } = getCheckboxData(e.target);
+    const { port, nonce } = getServerData();
     const source = getSource();
-    const action = checkbox.checked ? 'mark' : 'unmark';
+    const action = checked ? 'mark' : 'unmark';
 
     const url = new URL(`http://localhost/checkbox/${action}`);
     url.port = port;
-    url.searchParams.append('instance', instance);
+    url.searchParams.append('nonce', nonce);
     url.searchParams.append('source', source);
-    url.searchParams.append('index', index);
-    url.searchParams.append('nonce', crypto.randomUUID());
+    url.searchParams.append('line', line);
+    url.searchParams.append('no-cache', crypto.randomUUID());
 
     sendRequest(url);
 });
 
-function getValues(id) {
-    const pairs = id.split(',').map((p) => p.split(':'));
-    const map = new Map(pairs);
+function getCheckboxData(node) {
+    const checkbox = node.closest(`input[type="checkbox"]`);
+    const dataLineNone = checkbox.closest(`[data-line]`);
+    const line = dataLineNone.getAttribute('data-line');
+    const checked = checkbox.checked;
+    return { line, checked };
+}
+
+function getServerData() {
+    const dataNode = document.getElementById('mdCheckboxServerData');
+
     return {
-        port: map.get('port'),
-        instance: map.get('instance'),
-        index: map.get('index'),
+        port: dataNode.getAttribute('data-port'),
+        nonce: dataNode.getAttribute('data-nonce'),
     };
 }
 

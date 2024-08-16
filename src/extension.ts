@@ -1,31 +1,29 @@
 import { randomUUID, timingSafeEqual } from 'crypto';
 import express, { Request, Response } from 'express';
+import MarkdownIt from 'markdown-it';
 import { AddressInfo } from 'net';
 import * as vscode from 'vscode';
 
 const emptyImage =
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQAAAAA3bvkkAAAACklEQVR4AWNgAAAAAgABc3UBGAAAAABJRU5ErkJggg==';
 
-const serverInstanceId = randomUUID().toString();
+const serverNonce = randomUUID().toString();
 
-const validateInstance = (req: Request) => {
-    const instanceId = req.query.instance as string;
-    return timingSafeEqual(
-        Buffer.from(instanceId),
-        Buffer.from(serverInstanceId)
-    );
+const validateNonce = (req: Request) => {
+    const nonce = req.query.nonce as string;
+    return timingSafeEqual(Buffer.from(nonce), Buffer.from(serverNonce));
 };
 
 const handle = (action: 'mark' | 'unmark') => (req: Request, res: Response) => {
-    if (!validateInstance(req)) {
+    if (!validateNonce(req)) {
         res.status(403);
         return;
     }
 
     const source = req.query.source as string;
-    const index = parseInt(req.query.index as string);
+    const line = parseInt(req.query.line as string);
 
-    console.log('got index', index, 'at source', source, 'with action', action);
+    console.log('got line', line, 'at source', source, 'with action', action);
     res.contentType('image/png');
     res.send(Buffer.from(emptyImage, 'base64'));
 };
@@ -44,10 +42,24 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push({ dispose: () => server.closeAllConnections() });
 
     return {
-        extendMarkdownIt(md: any) {
-            return md.use(require('markdown-it-checkbox'), {
-                idPrefix: `port:${port},instance:${serverInstanceId},index:`,
+        extendMarkdownIt(md: MarkdownIt) {
+            md = md.use(require('markdown-it-task-checkbox'), {
+                disabled: false,
             });
+            md.core.ruler.push('checkbox_server_data', (state) => {
+                const serverDataToken = new state.Token(
+                    'md_checkbox_server_data',
+                    'div',
+                    0
+                );
+                serverDataToken.attrSet('hidden', '');
+                serverDataToken.attrSet('id', 'mdCheckboxServerData');
+                serverDataToken.attrSet('data-port', port.toString());
+                serverDataToken.attrSet('data-nonce', serverNonce);
+
+                state.tokens.push(serverDataToken);
+            });
+            return md;
         },
     };
 }
