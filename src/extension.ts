@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { createServer } from './server';
 
 export function activate(context: vscode.ExtensionContext) {
-    console.log('Extension "vscode-md-checkbox" is now active.');
+    console.log('Extension "md-checkbox" is now active.');
 
     const { port, serverNonce, disposable } = createServer();
     context.subscriptions.push(disposable);
