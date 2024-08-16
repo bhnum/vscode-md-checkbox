@@ -1,7 +1,7 @@
 {
     "name": "md-checkbox",
-    "displayName": "Markdown Checkbox",
-    "description": "Interactive checkboxes in MarkDown previews",
+    "displayName": "Markdown Interactive Checkbox",
+    "description": "Interactive checkboxes in Markdown task lists",
     "version": "0.0.1",
     "engines": {
         "vscode": "^1.92.0"
