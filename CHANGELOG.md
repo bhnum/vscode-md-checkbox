@@ -1,9 +1,8 @@
 # Change Log
 
-All notable changes to the "md-checkbox" extension will be documented in this file.
+## [1.0.0] - 2024-08-16
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+### Added
 
-## [Unreleased]
-
-- Initial release
+-   Checkbox rendering in Markdown preview
+-   Ability to directly check or uncheck checkboxes in the preview
