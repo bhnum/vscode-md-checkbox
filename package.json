@@ -2,7 +2,7 @@
     "name": "md-checkbox",
     "displayName": "Markdown Interactive Checkbox",
     "description": "Interactive checkboxes in Markdown task lists",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "engines": {
         "vscode": "^1.92.0"
     },
@@ -25,7 +25,7 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "npm run build",
+        "vscode:prepublish": "npm run package",
         "package": "node esbuild.mjs --production",
         "build": "node esbuild.mjs",
         "watch": "node esbuild.mjs --watch",
