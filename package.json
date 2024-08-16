@@ -1,14 +1,21 @@
 {
     "name": "md-checkbox",
     "displayName": "Markdown Checkbox",
-    "description": "",
+    "description": "Interactive checkboxes in MarkDown previews",
     "version": "0.0.1",
     "engines": {
-        "vscode": "^1.91.0"
+        "vscode": "^1.92.0"
     },
     "categories": [
         "Other"
     ],
+    "homepage": "https://github.com/bhnum/vscode-md-checkbox/blob/main/README.md",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bhnum/vscode-md-checkbox.git"
+    },
+    "publisher": "behnam",
+    "pricing": "Free",
     "activationEvents": [],
     "main": "./out/extension.js",
     "contributes": {
