@@ -3,7 +3,7 @@
 src/**
 out/**
 node_modules/**
-esbuild.js
+esbuild.mjs
 .gitignore
 .yarnrc
 task-list.md
