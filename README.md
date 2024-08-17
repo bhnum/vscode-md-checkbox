@@ -2,6 +2,8 @@
 
 A Visual Studio Code extension that renders markdown checkboxes in the preview and lets you check or uncheck them directly. This is useful for managing to-do lists or tasks within markdown files.
 
+![alt text](images/demo.webp)
+
 ## Important Notes
 
 -   You need to set Markdown's Preview Security Settings to "Allow insecure local content".
